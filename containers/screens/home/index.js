@@ -7,8 +7,10 @@ import {
   StyleSheet,
   Image,
   FlatList,
-  ActivityIndicator
+  ActivityIndicator,
+  Box
 } from 'react-native';
+import { getTasks } from '../../../data/api.js';
 // import FontAwesome, { Icons } from 'react-native-fontawesome';
 
 function HomeScreen ({ navigation }) {
@@ -22,41 +24,43 @@ function HomeScreen ({ navigation }) {
     };
   };*/
 
-  const getTasks = async () => {
-	  try {
-		  const response = await fetch('http://192.168.1.117:4000/tasks');
-		  const json = await response.json();
-      console.log(json);
-		  setData(json.tasks);
-	  } catch (error) {
-		  console.error(error);
-	  } finally {
-		  setLoading(false)
-	  }
+  const loadTasks = async () => {
+    const tasks = await getTasks();
+    console.log('llegó');
+    setData(tasks);
+    setLoading(false);
+    console.log(data.tasks.json());
   }
 
   useEffect(() => {
-    getTasks();
-    console.log('---------------- NUEVA CONSULTA ----------------');
+    loadTasks();
   }, []);
 
+  const onFlatListEmpty = () => {
     return (
-      <View>
-        <Text>This is the Home screen</Text>
-	      <View style={{ flex:1, padding: 24}}>
-          {isLoading ? <ActivityIndicator/> : (
-          <FlatList
-            data={data}
-            keyExtractor={({ id }, index) => id}
-            renderItem={({ tasks }) => (
-              console.log(tasks)
-            )}
-          />
-          )}
-	      </View>
+      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
+          No Data Found in FlatList
+        </Text>
       </View>
-    )
+    );
   }
+
+  return (
+    <View style={{ flex: 1, padding: 24 }}>
+      {isLoading ? <ActivityIndicator/> : (
+        <FlatList
+          data={data.tasks}
+          keyExtractor={({ id }, index) => id}
+          ListEmptyComponent={onFlatListEmpty}
+          renderItem={({ item }) => (
+            <Text>{item.title}, {item.done}</Text>
+          )}
+        />
+      )}
+    </View>
+  );
+}
 
 export default HomeScreen
 

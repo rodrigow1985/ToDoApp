@@ -26,10 +26,8 @@ function HomeScreen ({ navigation }) {
 
   const loadTasks = async () => {
     const tasks = await getTasks();
-    console.log('llegó');
     setData(tasks);
     setLoading(false);
-    console.log(data.tasks.json());
   }
 
   useEffect(() => {
@@ -51,7 +49,7 @@ function HomeScreen ({ navigation }) {
       {isLoading ? <ActivityIndicator/> : (
         <FlatList
           data={data.tasks}
-          keyExtractor={({ id }, index) => id}
+          keyExtractor={({ item }) => item.id +''}
           ListEmptyComponent={onFlatListEmpty}
           renderItem={({ item }) => (
             <Text>{item.title}, {item.done}</Text>

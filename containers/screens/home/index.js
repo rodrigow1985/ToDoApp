@@ -25,13 +25,26 @@ function HomeScreen ({ navigation }) {
   };*/
 
   const loadTasks = async () => {
-    const tasks = await getTasks();
-    setData(tasks);
-    setLoading(false);
+    try {
+      const tasks = await getTasks();
+      setData(tasks);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+    
+    /*const apiData = await getTasks();
+    //console.log(apiData)
+    setData(apiData);
+    console.log('data');
+    console.log(data);
+    setLoading(false);*/
   }
 
   useEffect(() => {
     loadTasks();
+    console.log("called");
   }, []);
 
   const onFlatListEmpty = () => {
@@ -49,7 +62,7 @@ function HomeScreen ({ navigation }) {
       {isLoading ? <ActivityIndicator/> : (
         <FlatList
           data={data.tasks}
-          keyExtractor={({ item }) => item.id +''}
+          keyExtractor={(item) => item.id.toString()}
           ListEmptyComponent={onFlatListEmpty}
           renderItem={({ item }) => (
             <Text>{item.title}, {item.done}</Text>

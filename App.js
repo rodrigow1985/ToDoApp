@@ -1,18 +1,21 @@
+import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+//import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 /* Screens */
 import HomeScreen from './containers/screens/home/';
 
-const Stack = createNativeStackNavigator();
+//const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
 
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-      </Stack.Navigator>
+       <Drawer.Navigator useLegacyImplementation>
+        <Drawer.Screen name="Home" component={HomeScreen} />
+      </Drawer.Navigator>
     </NavigationContainer>
   );
 }

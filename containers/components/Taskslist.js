@@ -47,10 +47,10 @@ function TasksList ({ navigation }) {
     <View>
         {isLoading ? <ActivityIndicator/> : (
             <FlatList
-            data={data.tasks}
-            keyExtractor={(item) => item.id.toString()}
-            ListEmptyComponent={onFlatListEmpty}
-            renderItem={renderItem}
+              data={data.tasks}
+              keyExtractor={(item) => item.id.toString()}
+              ListEmptyComponent={onFlatListEmpty}
+              renderItem={renderItem}
             />
         )}
     </View>

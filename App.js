@@ -1,26 +1,41 @@
 import 'react-native-gesture-handler';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-//import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {
+  StyleSheet,
+  Text,
+  View,
+  useColorScheme
+} from 'react-native';
+import { 
+  NavigationContainer,
+  DefaultTheme,
+  DarkTheme
+} from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 /* Screens */
 import HomeScreen from './containers/screens/home/';
+import SettingsScreen from './containers/screens/settings/';
 
-//const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
-function App() {
+export const ThemeContext = React.createContext();
+
+export default function App() {
+  const [theme, setTheme] = useState('Light');
+  const themeData = { theme, setTheme };
   return (
-    <NavigationContainer>
-       <Drawer.Navigator useLegacyImplementation>
-        <Drawer.Screen name="Home" component={HomeScreen} />
-      </Drawer.Navigator>
-    </NavigationContainer>
+    <ThemeContext.Provider value={themeData}>
+      <NavigationContainer theme={theme == 'Light' ? DefaultTheme : DarkTheme}>
+        <Drawer.Navigator useLegacyImplementation>
+          <Drawer.Screen name="Home" component={HomeScreen} />
+          <Drawer.Screen name="Settings" component={SettingsScreen} />
+        </Drawer.Navigator>
+      </NavigationContainer>
+    </ThemeContext.Provider>
   );
 }
-
-export default App;
+//export default App;
 /*
 export default function App() {
   return (

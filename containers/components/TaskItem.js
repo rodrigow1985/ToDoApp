@@ -18,7 +18,6 @@ const TaskItem = ({ task, handleDelete }) => {
                 unfillColor="#FFFFFF"
                 text={task.title}
                 iconStyle={{ borderColor: "red" }}
-                //textStyle={{ fontFamily: "JosefinSans-Regular" }}
                 onPress={(isChecked) => {setToggleCheckBox(isChecked)}}
             />
         </TouchableOpacity>

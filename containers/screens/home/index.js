@@ -4,7 +4,7 @@ import {
   StyleSheet
 } from 'react-native';
 // import FontAwesome, { Icons } from 'react-native-fontawesome';
-
+import Layout from '../../components/Layout';
 import TaskList from "../../components/Taskslist";
 
   /*static navigationOptions = ({ navigation }) => {
@@ -16,9 +16,9 @@ import TaskList from "../../components/Taskslist";
   
 const HomeScreen = () => {
   return (
-    <View>
+    <Layout>
       <TaskList />
-    </View>
+    </Layout>
   );
 };
 

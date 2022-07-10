@@ -50,7 +50,7 @@ function TasksList ({ navigation }) {
               data={data.tasks}
               keyExtractor={(item) => item.id.toString()}
               ListEmptyComponent={onFlatListEmpty}
-              renderItem={renderItem}
+              renderItem={(item) => renderItem(item)}
             />
         )}
     </View>

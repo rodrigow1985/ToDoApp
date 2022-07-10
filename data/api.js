@@ -7,4 +7,20 @@ export const getTasks = async () => {
     } catch (error) {
       console.log(error);
     }
-  }
+}
+
+export const doneTask = async (taskId) => {
+    try {
+        const res = await fetch(`${url_api}/done/${taskId}`, {
+            method: "PUT",
+            headers: {
+            Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            //body: JSON.stringify(newTask),
+        });
+        return res;
+    } catch (error) {
+        console.log(error);
+    }
+};

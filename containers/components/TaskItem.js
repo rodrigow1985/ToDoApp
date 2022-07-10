@@ -1,12 +1,34 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useNavigation } from "@react-navigation/native";
+import { doneTask } from '../../data/api.js';
 
 const TaskItem = ({ task, handleDelete }) => {
     const navigation = useNavigation();
-    const [toggleCheckBox, setToggleCheckBox] = useState(false)
+    const [toggleCheckBox, setToggleCheckBox] = useState(task.done)
+    const [activeTask, setActiveTask] = useState([])
+
+    useEffect(() => {
+      setActiveTask(task);
+      //setToggleCheckBox(task.done);
+      //console.log(toggleCheckBox);
+    }, []);
+
+    const updateDoneAttribute = async () => {
+      try {
+        const res = await doneTask(activeTask.id);
+        console.log('Res API:');
+        console.log(res);
+        setActiveTask(res.json());
+        console.log('ActiveTask:');
+        console.log(activeTask);
+        setToggleCheckBox(activeTask.done);
+      } catch (error) {
+        console.log(error);
+      }
+    }
     return (
       <View style={styles.itemContainer}>
         <TouchableOpacity
@@ -16,9 +38,10 @@ const TaskItem = ({ task, handleDelete }) => {
                 size={25}
                 fillColor="red"
                 unfillColor="#FFFFFF"
-                text={task.title}
+                text={activeTask.title}
                 iconStyle={{ borderColor: "red" }}
-                onPress={(isChecked) => {setToggleCheckBox(isChecked)}}
+                isChecked={toggleCheckBox}
+                onPress={() => {updateDoneAttribute()}}
             />
         </TouchableOpacity>
         <TouchableOpacity

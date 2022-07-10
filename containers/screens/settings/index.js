@@ -58,7 +58,6 @@ export default SettingsScreen
 const styles = StyleSheet.create({
     settingContainer: {
         flex: 2, // the number of columns you want to devide the screen into
-        //flexDirection: "row",
         alignItems: "center",
         paddingHorizontal: 20,
         paddingBottom: 20,
@@ -66,23 +65,16 @@ const styles = StyleSheet.create({
       },
       row: {
         flexDirection: "row",
+        borderBottomWidth: 2,
+        borderBottomColor: "gray",
       },
       "1col":  {
-        //backgroundColor:  "lightblue",
-        //borderColor:  "#fff",
-        //borderWidth:  1,
         flex:  1
       },
       "2col":  {
-        //backgroundColor:  "green",
-        //borderColor:  "#fff",
-        //borderWidth:  1,
         flex:  2
       },
       "3col":  {
-        //backgroundColor:  "orange",
-        //borderColor:  "#fff",
-        //borderWidth:  1,
         flex:  3
       },
       title: {

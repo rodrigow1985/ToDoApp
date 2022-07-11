@@ -1,75 +1,118 @@
+import React from 'react';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import {
+  PanGestureHandler,
+  PanGestureHandlerGestureEvent,
+  PanGestureHandlerProps,
+} from 'react-native-gesture-handler';
+import Animated, {
+  runOnJS,
+  useAnimatedGestureHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import { FontAwesome5 } from '@expo/vector-icons';
 
-import React, { useState, useEffect } from "react";
-import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
-import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { useNavigation } from "@react-navigation/native";
-import { doneTask } from '../../data/api.js';
+const LIST_ITEM_HEIGHT = 70;
 
-const TaskItem = ({ task, handleDelete }) => {
-    const navigation = useNavigation();
-    const [toggleCheckBox, setToggleCheckBox] = useState(task.done)
-    const [activeTask, setActiveTask] = useState([])
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const TRANSLATE_X_THRESHOLD = -SCREEN_WIDTH * 0.3;
 
-    useEffect(() => {
-      setActiveTask(task);
-      //setToggleCheckBox(task.done);
-      //console.log(toggleCheckBox);
-    }, []);
+const TaskItem = ({
+  task,
+}) => {
 
-    const updateDoneAttribute = async () => {
-      try {
-        const res = await doneTask(activeTask.id);
-        console.log('Res API:');
-        console.log(res);
-        setActiveTask(res.json());
-        console.log('ActiveTask:');
-        console.log(activeTask);
-        setToggleCheckBox(activeTask.done);
-      } catch (error) {
-        console.log(error);
+  const translateX = useSharedValue(0);
+  const TRANSLATE_X_THRESHOLD = -SCREEN_WIDTH * 0.3;
+  const itemHeight = useSharedValue(LIST_ITEM_HEIGHT);
+
+  const panGesture = useAnimatedGestureHandler({
+    onActive: (event) => {
+      translateX.value = event.translationX
+    },
+    onEnd: () => {
+      const shouldBeDismissed = translateX.value < TRANSLATE_X_THRESHOLD
+      if (shouldBeDismissed) {
+        translateX.value = withTiming(-SCREEN_WIDTH)
+        itemHeight.value = withTiming(0)
+      } else {
+        translateX.value = withTiming(0);
       }
     }
-    return (
-      <View style={styles.itemContainer}>
-        <TouchableOpacity
-          //onPress={() => navigation.navigate("TaskFormScreen", { id: task.id })}
-        >
-            <BouncyCheckbox
-                size={25}
-                fillColor="red"
-                unfillColor="#FFFFFF"
-                text={activeTask.title}
-                iconStyle={{ borderColor: "red" }}
-                isChecked={toggleCheckBox}
-                onPress={() => {updateDoneAttribute()}}
-            />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{ backgroundColor: "#ee5253", padding: 7, borderRadius: 5 }}
-          //onPress={() => handleDelete(task.id)}
-        >
-          <Text style={{ color: "#fff" }}>Delete</Text>
-        </TouchableOpacity>
-      </View>
+  });
+
+  const rStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateX: translateX.value,
+      },
+    ],
+  }));
+
+  const rIconContainerStyle = useAnimatedStyle(() => {
+    const opacity = withTiming(
+      translateX.value < TRANSLATE_X_THRESHOLD ? 1 : 0
     );
-  };
+    return { opacity };
+  });
+
+  const rTaskContainerStyle = useAnimatedStyle(() => {
+    return {
+      height: itemHeight.value,
+      marginVertical: marginVertical.value,
+      opacity: opacity.value,
+    };
+  });
+
+  return (
+    <View style={[styles.taskContainer, rTaskContainerStyle]}>
+      <Animated.View style={[styles.iconContainer, rIconContainerStyle]}>
+        <Text style={styles.taskTitle}>DELETE</Text>
+      </Animated.View>
+      <PanGestureHandler onGestureEvent={panGesture}>
+        <Animated.View style={[styles.task, rStyle]}>
+          <Text style={styles.taskTitle}>{task.title}</Text>
+        </Animated.View>
+      </PanGestureHandler>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-    itemContainer: {
-      //backgroundColor: "#333333",
-      padding: 20,
-      marginVertical: 8,
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      borderRadius: 5,
+  taskContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  task: {
+    width: '90%',
+    height: LIST_ITEM_HEIGHT,
+    marginVertical: 10,
+    justifyContent: 'center',
+    paddingLeft: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    // Shadow for iOS
+    shadowOpacity: 0.08,
+    shadowOffset: {
+      width: 0,
+      height: 20,
     },
-    itemTitle: {
-      //color: "#ffffff",
-    },
-    checkbox: {
-        alignSelf: "center",
-    },
-  });
+    shadowRadius: 10,
+    // Shadow for Android
+    elevation: 5,
+  },
+  taskTitle: {
+    fontSize: 16,
+  },
+  iconContainer: {
+    height: LIST_ITEM_HEIGHT,
+    width: LIST_ITEM_HEIGHT,
+    position: 'absolute',
+    right: '10%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 export default TaskItem;

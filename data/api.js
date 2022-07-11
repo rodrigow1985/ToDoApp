@@ -19,7 +19,7 @@ export const doneTask = async (taskId) => {
             },
             //body: JSON.stringify(newTask),
         });
-        return res;
+        return res.json();
     } catch (error) {
         console.log(error);
     }

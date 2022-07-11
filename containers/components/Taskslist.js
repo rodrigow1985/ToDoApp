@@ -26,7 +26,7 @@ function TasksList ({ navigation }) {
 
   useEffect(() => {
     loadTasks();
-    console.log("called");
+    console.log("API: getTasks");
   }, []);
 
   const renderItem = ({ item }) => (

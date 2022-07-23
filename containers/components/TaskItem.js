@@ -24,8 +24,9 @@ const TaskItem = ({
 }) => {
 
   const translateX = useSharedValue(0);
-  const TRANSLATE_X_THRESHOLD = -SCREEN_WIDTH * 0.3;
   const itemHeight = useSharedValue(LIST_ITEM_HEIGHT);
+  const marginVertical = useSharedValue(10);
+  const opacity = useSharedValue(1);
 
   const panGesture = useAnimatedGestureHandler({
     onActive: (event) => {
@@ -34,8 +35,10 @@ const TaskItem = ({
     onEnd: () => {
       const shouldBeDismissed = translateX.value < TRANSLATE_X_THRESHOLD
       if (shouldBeDismissed) {
-        translateX.value = withTiming(-SCREEN_WIDTH)
-        itemHeight.value = withTiming(0)
+        translateX.value = withTiming(-SCREEN_WIDTH);
+        itemHeight.value = withTiming(0);
+        marginVertical.value = withTiming(0);
+        opacity.value = withTiming(0);
       } else {
         translateX.value = withTiming(0);
       }
@@ -68,7 +71,7 @@ const TaskItem = ({
   return (
     <View style={[styles.taskContainer, rTaskContainerStyle]}>
       <Animated.View style={[styles.iconContainer, rIconContainerStyle]}>
-        <Text style={styles.taskTitle}>DELETE</Text>
+        <Text >DELETE</Text>
       </Animated.View>
       <PanGestureHandler onGestureEvent={panGesture}>
         <Animated.View style={[styles.task, rStyle]}>
@@ -83,11 +86,12 @@ const styles = StyleSheet.create({
   taskContainer: {
     width: '100%',
     alignItems: 'center',
+    //marginVertical: 10,
   },
   task: {
+    //marginVertical: 10,
     width: '90%',
     height: LIST_ITEM_HEIGHT,
-    marginVertical: 10,
     justifyContent: 'center',
     paddingLeft: 20,
     backgroundColor: 'white',

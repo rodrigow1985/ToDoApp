@@ -13,11 +13,13 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { back } from 'react-native/Libraries/Animated/Easing';
 
 const LIST_ITEM_HEIGHT = 70;
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const TRANSLATE_X_THRESHOLD = -SCREEN_WIDTH * 0.3;
+const TRANSLATE_X_THRESHOLD_DISMISSED = -SCREEN_WIDTH * 0.2;
+const TRANSLATE_X_THRESHOLD_EDITED = SCREEN_WIDTH * 0.2;
 
 const TaskItem = ({
   task,
@@ -27,18 +29,31 @@ const TaskItem = ({
   const itemHeight = useSharedValue(LIST_ITEM_HEIGHT);
   const marginVertical = useSharedValue(10);
   const opacity = useSharedValue(1);
+  const backgroundColor = useSharedValue('red');
+  const right = useSharedValue(0);
 
   const panGesture = useAnimatedGestureHandler({
     onActive: (event) => {
       translateX.value = event.translationX
+      if (translateX.value > 0) {
+        backgroundColor.value = 'blue'
+        right.value = '79%'
+      }  else {
+        backgroundColor.value = 'red'
+        right.value = '10%'
+      }
+      //console.log(translateX.value)
     },
     onEnd: () => {
-      const shouldBeDismissed = translateX.value < TRANSLATE_X_THRESHOLD
+      const shouldBeDismissed = translateX.value < TRANSLATE_X_THRESHOLD_DISMISSED
+      const shouldBeEdited = translateX.value > TRANSLATE_X_THRESHOLD_EDITED
       if (shouldBeDismissed) {
         translateX.value = withTiming(-SCREEN_WIDTH);
         itemHeight.value = withTiming(0);
         marginVertical.value = withTiming(0);
         opacity.value = withTiming(0);
+      } else if (shouldBeEdited) {
+        translateX.value = withTiming(TRANSLATE_X_THRESHOLD_EDITED);
       } else {
         translateX.value = withTiming(0);
       }
@@ -53,11 +68,24 @@ const TaskItem = ({
     ],
   }));
 
-  const rIconContainerStyle = useAnimatedStyle(() => {
+  const rIconDeleteContainerStyle = useAnimatedStyle(() => {
     const opacity = withTiming(
-      translateX.value < TRANSLATE_X_THRESHOLD ? 1 : 0
+      translateX.value < TRANSLATE_X_THRESHOLD_DISMISSED ? 1 : 0
     );
-    return { opacity };
+    return {
+      right: right.value,
+      opacity,
+     };
+  });
+
+  const rIconEditContainerStyle = useAnimatedStyle(() => {
+    const opacity = withTiming(
+      translateX.value < TRANSLATE_X_THRESHOLD_EDITED ? 0 : 1
+    );
+    return {
+      right: right.value,
+      opacity,
+     };
   });
 
   const rTaskContainerStyle = useAnimatedStyle(() => {
@@ -68,10 +96,29 @@ const TaskItem = ({
     };
   });
 
+  const rTaskBackStyle = useAnimatedStyle(() => {
+    return {
+      backgroundColor: backgroundColor.value,
+    }
+  });
+
   return (
     <Animated.View style={[styles.taskContainer, rTaskContainerStyle]}>
-      <Animated.View style={[styles.iconContainer, rIconContainerStyle]}>
-        <Text >DELETE</Text>
+      <Animated.View style={[styles.taskBack, rTaskBackStyle]}>
+      </Animated.View>
+      <Animated.View style={[styles.iconContainer, rIconDeleteContainerStyle]}>
+        <FontAwesome5
+            name={'trash-alt'}
+            size={LIST_ITEM_HEIGHT * 0.3}
+            color={'white'}
+          />
+      </Animated.View>
+      <Animated.View style={[styles.iconContainer, rIconEditContainerStyle]}>
+        <FontAwesome5
+            name={'edit'}
+            size={LIST_ITEM_HEIGHT * 0.3}
+            color={'white'}
+          />
       </Animated.View>
       <PanGestureHandler onGestureEvent={panGesture}>
         <Animated.View style={[styles.task, rStyle]}>
@@ -88,14 +135,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     //marginVertical: 10,
   },
+  taskBack: {
+    height: LIST_ITEM_HEIGHT,
+    width: '100%',
+    position: 'absolute',
+    justifyContent: 'center',
+  },
   task: {
     //marginVertical: 10,
-    width: '90%',
+    width: '100%',
     height: LIST_ITEM_HEIGHT,
     justifyContent: 'center',
     paddingLeft: 20,
     backgroundColor: 'white',
-    borderRadius: 10,
+    //borderRadius: 10,
     // Shadow for iOS
     shadowOpacity: 0.08,
     shadowOffset: {
@@ -113,7 +166,7 @@ const styles = StyleSheet.create({
     height: LIST_ITEM_HEIGHT,
     width: LIST_ITEM_HEIGHT,
     position: 'absolute',
-    right: '10%',
+    //right: '10%',
     justifyContent: 'center',
     alignItems: 'center',
   },

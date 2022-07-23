@@ -69,7 +69,7 @@ const TaskItem = ({
   });
 
   return (
-    <View style={[styles.taskContainer, rTaskContainerStyle]}>
+    <Animated.View style={[styles.taskContainer, rTaskContainerStyle]}>
       <Animated.View style={[styles.iconContainer, rIconContainerStyle]}>
         <Text >DELETE</Text>
       </Animated.View>
@@ -78,7 +78,7 @@ const TaskItem = ({
           <Text style={styles.taskTitle}>{task.title}</Text>
         </Animated.View>
       </PanGestureHandler>
-    </View>
+    </Animated.View>
   );
 };
 

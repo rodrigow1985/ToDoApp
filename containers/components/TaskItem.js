@@ -18,7 +18,7 @@ import { back } from 'react-native/Libraries/Animated/Easing';
 const LIST_ITEM_HEIGHT = 70;
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const TRANSLATE_X_THRESHOLD_DISMISSED = -SCREEN_WIDTH * 0.2;
+const TRANSLATE_X_THRESHOLD_DISMISSED = -SCREEN_WIDTH * 0.3;
 const TRANSLATE_X_THRESHOLD_EDITED = SCREEN_WIDTH * 0.2;
 
 const TaskItem = ({
@@ -122,7 +122,9 @@ const TaskItem = ({
       </Animated.View>
       <PanGestureHandler onGestureEvent={panGesture}>
         <Animated.View style={[styles.task, rStyle]}>
+          <View style={[styles.triangleLeft]}></View>
           <Text style={styles.taskTitle}>{task.title}</Text>
+          <View style={[styles.triangleRight]}></View>
         </Animated.View>
       </PanGestureHandler>
     </Animated.View>
@@ -141,23 +143,53 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
   },
+  triangleRight: {
+    top: 0,
+    right: 0,
+    position: "absolute",
+    width: 0,
+    height: 0,
+    backgroundColor: "transparent",
+    borderStyle: "solid",
+    borderLeftWidth: 30,
+    //borderRightWidth: 50,
+    borderBottomWidth: 70,
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
+    borderBottomColor: "red",
+  },
+  triangleLeft: {
+    top: 0,
+    //left: -50,
+    position: "absolute",
+    width: 0,
+    height: 0,
+    backgroundColor: "transparent",
+    borderStyle: "solid",
+    //borderLeftWidth: 50,
+    borderRightWidth: 30,
+    borderTopWidth: 70,
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
+    borderTopColor: "blue",
+  },
   task: {
     //marginVertical: 10,
     width: '100%',
     height: LIST_ITEM_HEIGHT,
     justifyContent: 'center',
-    paddingLeft: 20,
+    paddingLeft: 50,
     backgroundColor: 'white',
     //borderRadius: 10,
     // Shadow for iOS
-    shadowOpacity: 0.08,
+    /*shadowOpacity: 0.08,
     shadowOffset: {
       width: 0,
       height: 20,
     },
     shadowRadius: 10,
     // Shadow for Android
-    elevation: 5,
+    elevation: 5,*/
   },
   taskTitle: {
     fontSize: 16,

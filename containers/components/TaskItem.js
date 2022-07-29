@@ -1,5 +1,10 @@
-import React from 'react';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { React, useState } from 'react';
+import { 
+  Dimensions, 
+  StyleSheet, 
+  Text, 
+  View, 
+  TouchableOpacity } from 'react-native';
 import {
   PanGestureHandler,
   PanGestureHandlerGestureEvent,
@@ -13,7 +18,10 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { back } from 'react-native/Libraries/Animated/Easing';
+//import { back } from 'react-native/Libraries/Animated/Easing';
+import ModalItem from "./ModalItem";  
+
+// TODO: Arreglar bug cuando se hace swipe hacia la izquierda luego de visualizarse el ícono de edit
 
 const LIST_ITEM_HEIGHT = 70;
 
@@ -24,6 +32,7 @@ const TRANSLATE_X_THRESHOLD_EDITED = SCREEN_WIDTH * 0.2;
 const TaskItem = ({
   task,
 }) => {
+  const [modalVisibleParam, setModalVisibleParam] = useState(false);
 
   const translateX = useSharedValue(0);
   const itemHeight = useSharedValue(LIST_ITEM_HEIGHT);
@@ -114,11 +123,16 @@ const TaskItem = ({
           />
       </Animated.View>
       <Animated.View style={[styles.iconContainer, rIconEditContainerStyle]}>
-        <FontAwesome5
-            name={'edit'}
-            size={LIST_ITEM_HEIGHT * 0.3}
-            color={'white'}
-          />
+        <TouchableOpacity
+          onPress={()=> {
+            setModalVisibleParam(true);
+          }}>
+            <FontAwesome5
+                name={'edit'}
+                size={LIST_ITEM_HEIGHT * 0.3}
+                color={'white'}
+              />
+          </TouchableOpacity>
       </Animated.View>
       <PanGestureHandler onGestureEvent={panGesture}>
         <Animated.View style={[styles.task, rStyle]}>

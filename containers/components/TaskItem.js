@@ -3,7 +3,9 @@ import {
   Dimensions, 
   StyleSheet, 
   Text, 
-  View, 
+  View,
+  Modal,
+  Pressable,
   TouchableOpacity } from 'react-native';
 import {
   PanGestureHandler,
@@ -19,7 +21,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import { FontAwesome5 } from '@expo/vector-icons';
 //import { back } from 'react-native/Libraries/Animated/Easing';
-import ModalItem from "./ModalItem";  
+import ModalItem from "./FormItem";  
+import FormItem from './FormItem';
 
 // TODO: Arreglar bug cuando se hace swipe hacia la izquierda luego de visualizarse el ícono de edit
 
@@ -32,7 +35,7 @@ const TRANSLATE_X_THRESHOLD_EDITED = SCREEN_WIDTH * 0.2;
 const TaskItem = ({
   task,
 }) => {
-  const [modalVisibleParam, setModalVisibleParam] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const translateX = useSharedValue(0);
   const itemHeight = useSharedValue(LIST_ITEM_HEIGHT);
@@ -113,6 +116,23 @@ const TaskItem = ({
 
   return (
     <Animated.View style={[styles.taskContainer, rTaskContainerStyle]}>
+      <Modal
+        animationType="slide"
+        //transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setModalVisible(!modalVisible);
+        }}
+        >
+          <Pressable
+          style={[styles.button, styles.buttonClose]}
+          onPress={() => setModalVisible(!modalVisible)}
+          >
+            <Text style={styles.textStyle}>Hide Modal</Text>
+          </Pressable>
+          <FormItem></FormItem>
+      </Modal>
       <Animated.View style={[styles.taskBack, rTaskBackStyle]}>
       </Animated.View>
       <Animated.View style={[styles.iconContainer, rIconDeleteContainerStyle]}>
@@ -125,7 +145,7 @@ const TaskItem = ({
       <Animated.View style={[styles.iconContainer, rIconEditContainerStyle]}>
         <TouchableOpacity
           onPress={()=> {
-            setModalVisibleParam(true);
+            setModalVisible(true);
           }}>
             <FontAwesome5
                 name={'edit'}
